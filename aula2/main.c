@@ -3,17 +3,18 @@
 #include <string.h>
 #include "hash.h"
 
+#define PATH "./resultados/"
 
-void printLine();
 void test_div_hash(int m, int range, int num);
 void writeFile(int *collisions, char* file_name, int m);
 void test_mul_hash(int m, int range, float a);
 char* float_to_char(float a);
-char* concat(char *s1, char *s2);
+char* int_to_char(int num);
+char* concat(char *s1, char *s2, char *s3, char *s4);
 
 int main() {
-    int *collisions;    
-    
+    int *collisions;  
+
     test_div_hash(12, 100, 3);  
     
     test_div_hash(11, 100, 3);   
@@ -28,12 +29,8 @@ int main() {
     return 0;
 }
 
-void printLine() {
-    printf("\n-----------------------------------------------\n");
-}
-
 void test_div_hash(int m, int range, int num) {
-    printf("\nDIV_HASH\nTeste com m = %d e h == %d\n", m, num);
+    printf("\nDIV_HASH\nTeste com m = %d\n", m);
 
     int *collisions = calloc(m, sizeof(int));
     for (int i = 1; i < range; i++) {
@@ -42,44 +39,63 @@ void test_div_hash(int m, int range, int num) {
 
         if (num != 0 && h == num)
             printf("%d ", i);
-    }
+    } 
+    printf("\n");
+    
+    char *arq_name = concat(PATH, "div_test_m_", int_to_char(m), ".txt");
+    
+    writeFile(collisions, arq_name, m);
+    printf("Resultado das colisões estão no arquivo: %s\n", arq_name);
 
-    //writeFile(collisions, "div_hash", m);  
 }
 
 void test_mul_hash(int m, int range, float a) {
-    printf("aaaaaa\n");
+    printf("\nMUL_HASH\nTeste executado com m = %d e a = %.3f\n", m, a);
+    
     int *collisions = calloc(m, sizeof(int));
     for (int i = 1; i < range; i++) {
         int h = mult_hash(i, m, a);
         collisions[h] ++;
     }
-    printf("aaaaaa\n");
-    char *arq_name = concat("mul_test", float_to_char(a));
-    printf("aaaaaa\n");
-    arq_name = concat(arq_name, ".txt");
-    printf("%s", arq_name);
-    writeFile(collisions, arq_name, m); 
+
+    char *arq_name = concat(PATH, "mul_test_", float_to_char(a), ".txt");
+  
+    writeFile(collisions, arq_name, m);
+    printf("Resultado das colisões estão no arquivo: %s\n", arq_name);
+   
 }
 
-char* concat(char *s1, char *s2) {
-    char *name = malloc(strlen(s1) + strlen(s2) + 1);
-    strcpy(name, s1);
-    strcat(name, s2);
-    return name;
+char* concat(char *s1, char *s2, char *s3, char *s4) {
+    char *s = malloc((strlen(s1) + strlen(s2) + strlen(s3) + strlen(s4) + 1) * sizeof(char));
+    strcpy(s, s1);
+    strcat(s, s2);
+    strcat(s, s3);
+    strcat(s, s4);
+    //free(s1);
+    //free(s2);
+    return s;
 }
 
 void writeFile(int *collisions, char* file_name, int m) {
     FILE *fp = fopen(file_name, "w");
 
-    for (int i = 1; i < m; i++) {
-        fprintf(fp, "%d %d\n", i, collisions[i]);
+    for (int i = 1; i < m; i++) {        
+        fprintf(fp, "%d %d\n", i, collisions[i]);   
     }
-
+    
     fclose(fp);
 }
 
-char* float_to_char(float a) {
-    char* nome;
-    sprintf(nome, "%.3f", a); 
+char* float_to_char(float num) {
+    char *buffer = malloc(10 * sizeof(char));
+    snprintf(buffer, 7, "%.4f", num); 
+
+    return buffer;
+}
+
+char* int_to_char(int num) {
+    char *buffer = malloc(10 * sizeof(char));
+    sprintf(buffer, "%d", num);
+
+    return buffer;
 }
