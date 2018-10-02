@@ -1,0 +1,29 @@
+Filipi de Carvalho Brabo
+RA: 11040016
+
+Execute arquivo hash.sh, ele cria a pasta resultados (pasta em que os arquivos das colisões serão colocados),
+    compila e exucuta o código.
+
+1 - Método da divisão
+    (a) 
+        No Teste com m = 12, o resultado obtidos com h(x) = 3 foram
+    3 15 27 39 51 63 75 87 99
+        Todos os numéros são múltiplos de 3, e são da forma 3 + (m*i), com i = 0,1..8
+
+    (b) 
+        No Teste com m = 11, o resultado obtidos com h(x) = 3 foram
+    3 14 25 36 47 58 69 80 91 
+        Todos os números são da forma 3 + (m*i), com i = 0,1..8
+
+2 - Método da multiplicação
+    (b)     
+        Com a = 0.62, percebemos que existem muitas chaves em que não há nenhuma colisão, 
+    isso provoca que outras chaves possuam muitas colisões, algumas chegam aproximadamente 
+    à 10 mil colisões. Também notamos que não há um padrão na distribuição das colisões, parece 
+    ser algo aleatório.
+        Já quando utilizamos a = 0.6180... conseguimos obter um padrão na distribuição das colisões,
+    em que temos poucas chaves que possuem muitas colisões (>4000), e a grande maioria das chaves possuem
+    poucas colisoes (<2000).
+
+
+Gráficos: https://docs.google.com/spreadsheets/d/1_DA7Wl9DKzkoNnMprk-Mlcv86BmXvTCq_oqe83H1OBA/edit?usp=sharing
