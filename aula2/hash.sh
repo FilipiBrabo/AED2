@@ -1,5 +1,5 @@
 #!/bin/bash
 
 mkdir resultados
-gcc main.c hash.c -o hash.exe -lm
-./hash.exe
+gcc -Wall main.c hash.c -o hash -lm
+./hash
