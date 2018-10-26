@@ -30,6 +30,15 @@ Node* new_node(int key) {
     return ret_val;
 }
 
+Node* create_node(int key) {
+    Node *new = new_node(key);
+    new->left = NIL_PTR;
+    new->right = NIL_PTR;
+    new->parent = NIL_PTR;        
+    
+    return new;
+}
+
 /**
 * A funcao abaixo insere uma nova chave em uma arvore RB
 * sem realizar o balanceamento.
@@ -44,24 +53,35 @@ Node* new_node(int key) {
 */
 Node* tree_insert(Node** T, int key){
     
-    if (*T == NIL_PTR) {
-        Node *new = new_node(key);
-        new->left = NIL_PTR;
-        new->right = NIL_PTR;
-        new->parent = *T;
-        
-        *T = new;
-        return new;
+    if (*T == NIL_PTR) {                
+        *T = create_node(key);
+        return *T;
     }
 
     if (key > (*T)->key) {
-        tree_insert(&((*T)->right), key);
+        if ((*T)->right == NIL_PTR) {
+            Node *new = new_node(key);
+            //atualiza o pai
+            new->parent = *T;
+
+        }
+        
+        return tree_insert(&((*T)->right), key);
+    
     } else if (key < (*T)->key){
-        tree_insert(&((*T)->left), key);
+        if ((*T)->left == NIL_PTR) {
+            Node *new = new_node(key);
+            //atualiza o pai
+            new->parent = *T;
+
+        }
+        return tree_insert(&((*T)->left), key);
     }
 
-    return NULL;
+    return NULL;    
 }
+
+//rb_insert(Node** T, int key)
 
 /**
 * Realiza uma rotacao simples para a esquerda
@@ -77,7 +97,8 @@ void left_rotate(Node** T, Node* x) {
     Node *y = x->right;   
     x->right = y->left;
     y->left = x;
-    
+
+    printf("%d", x->parent->key);   
     // Se o pai de X é a raiz
     if (x->parent == NIL_PTR)
         *T = y;
@@ -124,7 +145,7 @@ void print_rb_tree_erd(Node **T) {
     if (*T == NIL_PTR)
         return;
 
-    printf("%d ", (*T)->key);
+    printf("%d <-- %d --> %d\n", (*T)->left->key, (*T)->key, (*T)->right->key);
     print_rb_tree_erd(&(*T)->left);
     // printf("%d ", (*T)->key);
     print_rb_tree_erd(&(*T)->right);    
