@@ -5,26 +5,29 @@ extern Node* NIL_PTR;
 
 int main() {
 
-    Node* root = NIL_PTR;
+    Node* root = NULL;
+    int key;
+    while (scanf("%d", &key) != 0) {
+        tree_insert(&root, key);
+    }
 
-    tree_insert(&root, 5);
-    tree_insert(&root, 2);
-    Node *x = tree_insert(&root, 15);
-    tree_insert(&root, 9);
-    tree_insert(&root, 18);
-    tree_insert(&root, 20);
-    tree_insert(&root, 16);
-
-    print_rb_tree_erd(&root);
-
-    Node *y = find_parent(&root, x);
-    printf("%d\n", x->key);
-    //printf("Pai de x%d\n", y->key);
-    left_rotate(&root, x);
+    print_test(&root);
+   
+    left_rotate(&root, root->right);
 
     printf("\n\nARVORE ROTACIONADA\n");
+    print_test(&root);
 
-    print_rb_tree_erd(&root);
     printf("\n");
     return 0;
+}
+
+
+void print_test(Node **T) {
+    if (*T == NULL)
+        return;
+
+    printf("%p <-- %d -- %p  --> %p\n", (*T)->left, (*T)->key, (*T), (*T)->right);
+    print_rb_tree_erd(&(*T)->left);
+    print_rb_tree_erd(&(*T)->right);    
 }
