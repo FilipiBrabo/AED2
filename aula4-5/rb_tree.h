@@ -1,6 +1,9 @@
 #ifndef RB_TREE_H_INCLUDED
 #define RB_TREE_H_INCLUDED
 
+#define par(a) a->parent
+#define gpar(a) a->parent->parent
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -23,6 +26,7 @@ void left_rotate(Node** T, Node* x);
 void right_rotate(Node** T, Node* x);
 void flip_color(Node** T, Node* x);
 void print_rb_tree_erd(Node **T);
-//rb_insert(Node** T, int key);
+int rb_black_height(Node *T);
+int max(int a, int b);
 
 #endif // RB_TREE_H_INCLUDED

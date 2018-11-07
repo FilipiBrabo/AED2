@@ -79,7 +79,7 @@ void rb_insert(Node** T, int key) {
     Node *z = new_node(key);
     Node *y = NULL;
     Node *x = *T;
-
+    
     while (x != NULL) {
         y = x;
         if (z->key < y->key) {
@@ -93,6 +93,7 @@ void rb_insert(Node** T, int key) {
     
     if (y == NULL) {
         *T = z;
+        
     } else {
         if (z->key < y->key) {
             y->left = z;
@@ -100,59 +101,59 @@ void rb_insert(Node** T, int key) {
             y->right = z;
         }
     }
-
-    z->left = NULL;
-    z->right = NULL;
-    z->color = RED;
     
     rb_insert_fixup(T, z);
 }
 
 void rb_insert_fixup(Node **T, Node *z) {
-    while (z->parent != NULL && z->parent->color == RED 
-            && z->parent->parent != NULL) {
+    while (par(z) != NULL && par(z)->color == RED 
+            && gpar(z) != NULL) {
         
-        Node *pai = z->parent;
-        Node *avo = pai->parent;
-        
-        if (pai == avo->left) {
-            Node *y = avo->right;
+        if (par(z) == gpar(z)->left) {
+
+            Node *y = gpar(z)->right;
             
-            if (y->color == RED) { //Tio de z é vermelho
-                pai->color = BLACK;
+            if (y != NULL && y->color == RED) { //Tio de z é vermelho
+                par(z)->color = BLACK;
                 y->color = BLACK;
-                avo->color = RED;            
-            
+                gpar(z)->color = RED;
+                z = gpar(z);
+
             } else {
-                if (z == pai->right) {
-                    z = pai;
+                if (z == par(z)->right) {
+                    z = par(z);
                     left_rotate(T, z);
                 }
                 
-                pai->color = BLACK;
-                avo->color = RED;
-                right_rotate(T, avo);            }
+                par(z)->color = BLACK;
+                gpar(z)->color = RED;
+                right_rotate(T, gpar(z));          
+            }
         
-        } else {           
-            Node *y = avo->left;
+        } else {
+           
+            Node *y = gpar(z)->left;
             
-            if (y->color == RED) { //Tio de z é vermelho
-                pai->color = BLACK;
+            if (y != NULL && y->color == RED) { //Tio de z é vermelho
+                par(z)->color = BLACK;
                 y->color = BLACK;
-                avo->color = RED;
+                gpar(z)->color = RED;
+                z = gpar(z);
             
             } else {
-                if (z == pai->left) {
-                    z = pai;
+                if (z == par(z)->left) {
+                    z = par(z);
                     right_rotate(T, z);
                 }
                 
-                pai->color = BLACK;
-                avo->color = RED;
-                left_rotate(T, avo);
+                par(z)->color = BLACK;
+                gpar(z)->color = RED;
+                left_rotate(T, gpar(z));
             }
         } 
     }
+    
+    (*T)->color = BLACK;
 }
 
 /**
@@ -169,22 +170,23 @@ void left_rotate(Node** T, Node* x) {
     Node *y = x->right;   
     x->right = y->left;
     y->left = x;
-
-    printf("%d", x->parent->key);   
-    // Se o pai de X é a raiz
-    if (x->parent == NULL)
+    y->parent = x->parent;
+    if (x->right != NULL)
+        x->right->parent = x;
+    
+    // Se o X é a raiz
+    if (x->parent == NULL) {
         *T = y;
+        x->parent = y;
     
     // Se X é o filho direito do seu pai    
-    else if (x->parent->right == x) {
+    } else if (x->parent->right == x) {
         x->parent->right = y;
-        y->parent = x->parent->right;
         x->parent = y;
 
     //Se X é o filho esquerdo do seu pai
     } else {
         x->parent->left = y;
-        y->parent = x->parent->left;
         x->parent = y;
     }
 }
@@ -202,22 +204,24 @@ void right_rotate(Node** T, Node* x) {
     Node *y = x->left;   
     x->left = y->right;
     y->right = x;
+    y->parent = x->parent;
+    if (x-> left != NULL)
+        x->left->parent = x;
 
-    printf("%d", x->parent->key);   
-    // Se o pai de X é a raiz
-    if (x->parent == NULL)
+    // Se X é a raiz
+    if (x->parent == NULL) {
         *T = y;
+        x->parent = y;
+    }
     
     // Se X é o filho esquerdo do seu pai    
     else if (x->parent->left == x) {
         x->parent->left = y;
-        y->parent = x->parent->left;
         x->parent = y;
 
     //Se X é o filho esquerdo do seu pai
     } else {
         x->parent->right = y;
-        y->parent = x->parent->right;
         x->parent = y;
     }
 }
@@ -257,4 +261,17 @@ void print_rb_tree_erd(Node **T) {
     print_rb_tree_erd(&(*T)->left);
     printf("%d ", (*T)->key);
     print_rb_tree_erd(&(*T)->right);    
+}
+
+int rb_black_height(Node *T) {
+    if (T == NULL) return -1;
+    
+    if (T->color == RED) {
+        return max(rb_black_height(T->left), rb_black_height(T->right));
+    }
+    return max(rb_black_height(T->left), rb_black_height(T->right)) + 1;
+}
+
+int max(int a, int b) {
+    return a > b ? a : b;
 }
