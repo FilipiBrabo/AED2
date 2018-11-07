@@ -75,6 +75,86 @@ Node* tree_insert(Node** T, int key){
     return new;    
 }
 
+void rb_insert(Node** T, int key) {
+    Node *z = new_node(key);
+    Node *y = NULL;
+    Node *x = *T;
+
+    while (x != NULL) {
+        y = x;
+        if (z->key < y->key) {
+            x = x->left;
+        } else {
+            x = x->right;
+        }
+    }
+    
+    z->parent = y;
+    
+    if (y == NULL) {
+        *T = z;
+    } else {
+        if (z->key < y->key) {
+            y->left = z;
+        } else {
+            y->right = z;
+        }
+    }
+
+    z->left = NULL;
+    z->right = NULL;
+    z->color = RED;
+    
+    rb_insert_fixup(T, z);
+}
+
+void rb_insert_fixup(Node **T, Node *z) {
+    while (z->parent != NULL && z->parent->color == RED 
+            && z->parent->parent != NULL) {
+        
+        Node *pai = z->parent;
+        Node *avo = pai->parent;
+        
+        if (pai == avo->left) {
+            Node *y = avo->right;
+            
+            if (y->color == RED) { //Tio de z é vermelho
+                pai->color = BLACK;
+                y->color = BLACK;
+                avo->color = RED;            
+            
+            } else {
+                if (z == pai->right) {
+                    z = pai;
+                    left_rotate(T, z);
+                }
+                
+                pai->color = BLACK;
+                avo->color = RED;
+                right_rotate(T, avo);            }
+        
+        } else {           
+            Node *y = avo->left;
+            
+            if (y->color == RED) { //Tio de z é vermelho
+                pai->color = BLACK;
+                y->color = BLACK;
+                avo->color = RED;
+            
+            } else {
+                if (z == pai->left) {
+                    z = pai;
+                    right_rotate(T, z);
+                }
+                
+                pai->color = BLACK;
+                avo->color = RED;
+                left_rotate(T, avo);
+            }
+        } 
+    }
+}
+
 /**
 * Realiza uma rotacao simples para a esquerda
 *
@@ -118,6 +198,28 @@ void left_rotate(Node** T, Node* x) {
 *
 */
 void right_rotate(Node** T, Node* x) {
+     // Y is the left child of x
+    Node *y = x->left;   
+    x->left = y->right;
+    y->right = x;
+
+    printf("%d", x->parent->key);   
+    // Se o pai de X é a raiz
+    if (x->parent == NULL)
+        *T = y;
+    
+    // Se X é o filho esquerdo do seu pai    
+    else if (x->parent->left == x) {
+        x->parent->left = y;
+        y->parent = x->parent->left;
+        x->parent = y;
+
+    //Se X é o filho esquerdo do seu pai
+    } else {
+        x->parent->right = y;
+        y->parent = x->parent->right;
+        x->parent = y;
+    }
 }
 
 
@@ -130,7 +232,22 @@ void right_rotate(Node** T, Node* x) {
 * x: Node pertencente a arvore em torno do qual faremos a rotacao
 *
 */
-void flip_color(Node** T, Node* x) {
+void flip_color(Node** T, Node* z) {
+    if (*T == NULL) return; // Checa se existe arvore
+    if (z == NULL) return; // Checa se existe no z
+
+    Node *pai = z->parent;
+    Node *avo = pai != NULL ? pai->parent : NULL;
+    if (avo == NULL) return; // Checa se existe avo
+    Node *tio = avo->left == pai ? avo->right : avo->left;
+    if (tio == NULL) return; // Checa se existe tio
+
+    if (z->color == RED && pai->color == RED 
+        && tio->color == RED && avo->color == BLACK) {
+            tio->color = BLACK;
+            pai->color = BLACK;
+            avo->color = RED;
+    }
 }
 
 void print_rb_tree_erd(Node **T) {

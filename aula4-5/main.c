@@ -2,6 +2,7 @@
 #include "rb_tree.h"
 
 extern Node* NIL_PTR;
+void print_test(Node **T);
 
 int main() {
 

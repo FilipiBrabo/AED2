@@ -16,7 +16,8 @@ typedef struct Node{
 } Node;
 
 
-
+void rb_insert(Node** T, int key);
+void rb_insert_fixup(Node **T, Node *z);
 Node* tree_insert(Node** T, int key);
 void left_rotate(Node** T, Node* x);
 void right_rotate(Node** T, Node* x);
