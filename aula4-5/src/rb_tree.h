@@ -31,6 +31,7 @@ void right_rotate(Node** T, Node* x);
 void flip_color(Node** T, Node* x);
 void print_rb_tree_erd(Node **T);
 int rb_black_height(Node *T);
+int rb_height(Node *T);
 int max(int a, int b);
 
 #endif // RB_TREE_H_INCLUDED

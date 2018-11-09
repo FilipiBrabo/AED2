@@ -19,6 +19,7 @@ int main() {
     //print_test(&root);
     printf("\n\n");
     printf("RB TREE BLACK HEIGHT: %d\n", rb_black_height(root));
+    printf("RB TREE HEIGHT: %d\n", rb_height(root));
     return 0;
 }
 

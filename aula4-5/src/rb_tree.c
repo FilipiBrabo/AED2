@@ -265,10 +265,21 @@ void print_rb_tree_erd(Node **T) {
 
 // Retorna a altura negra de um nó(contagem de todos os nós pretos até um nó folha)
 int rb_black_height(Node *T) {
-    if (T == NIL_PTR) return -1;
+    if (T == NIL_PTR || T == NULL) return -1;
     
     if (T->color == RED) {
         return rb_black_height(T->left);
     }
     return rb_black_height(T->left) + 1;
+}
+
+int max(int a, int b) {
+    return a > b ? a : b;
+}
+
+// Calcula a altura do nó
+int rb_height(Node *T) {
+    if (T == NIL_PTR || T == NULL) return -1;
+    
+    return max(rb_height(T->left), rb_height(T->right)) + 1;
 }
