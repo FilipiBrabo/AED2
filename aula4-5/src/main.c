@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "rb_tree.h"
+#include "../include/rb_tree.h"
 
 extern Node* NIL_PTR;
 void print_test(Node **T);
@@ -14,10 +14,10 @@ int main() {
         //print_test(&root);
     }
     
-    printf("RB TREE ERD:\n");
-    print_rb_tree_erd(&root);
-    //print_test(&root);
-    printf("\n\n");
+    //printf("RB TREE ERD:\n");
+    //print_rb_tree_erd(&root);
+    //printf("\n");
+    printf("RB TREE SIZE: %d\n", size);
     printf("RB TREE BLACK HEIGHT: %d\n", rb_black_height(root));
     printf("RB TREE HEIGHT: %d\n", rb_height(root));
     return 0;

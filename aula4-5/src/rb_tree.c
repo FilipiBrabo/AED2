@@ -1,4 +1,6 @@
-#include "rb_tree.h"
+#include "../include/rb_tree.h"
+
+int size = 0;
 
 /* Valor de sentinela, indica que chegamos em alguma folha ou entao
  a raiz da arvore */
@@ -103,6 +105,7 @@ void rb_insert(Node** T, int key) {
     }
     
     rb_insert_fixup(T, z);
+    size++;
 }
 
 void rb_insert_fixup(Node **T, Node *z) {
@@ -259,7 +262,7 @@ void print_rb_tree_erd(Node **T) {
         return;
             
     print_rb_tree_erd(&(*T)->left);
-    printf("%s%d "W"", (*T)->color == RED ? R : W, (*T)->key);
+    printf("%d ", (*T)->key);
     print_rb_tree_erd(&(*T)->right);    
 }
 
