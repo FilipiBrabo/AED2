@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "tn_trie.h"
 #include <string>
 #include <iostream>
+#include <fstream>
+#include "../include/tn_trie.h"
 
 using namespace std;
 
@@ -12,6 +13,39 @@ void print_search(tn_trie_node* root, string key){
     cout << key << "\n";
 }
 
+int main () {
+    tn_trie_node *root = new_node();
+    string line, file_name = "", url;
+    
+    while(1) {
+        cout << "Digite o nome do arquivo de entrada:" << endl;
+        cin >> file_name;
+        file_name = "../in/" + file_name;
+        
+        ifstream myfile(file_name.c_str());
+        if (myfile.is_open()) {
+            
+            while (myfile >> line) {
+                insert(root, line);
+            }
+            myfile.close();
+            break;
+            
+        } else {
+            cout << "Arquivo não encontrado/não existe.\n" 
+                << "Certifique-se de que ele está no diretório \"in\"" << endl;
+        }
+    }
+    
+    //print_all(root);
+    cout << "Digite a url:" << endl;
+    cin >> url;
+    tn_suggest(root, url.c_str());
+    
+    return 0;
+}
+
+/*
 int main() 
 { 
     string keys[] = {"exemplo.com", "url123.org", 
@@ -42,4 +76,4 @@ int main()
     cout << "++++++++++++++++" << endl;
     tn_suggest(root, "pub.");
 
-} 
+} */

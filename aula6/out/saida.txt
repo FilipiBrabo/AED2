@@ -1,0 +1,13 @@
+Digite o nome do arquivo de entrada:
+Arquivo não encontrado/não existe.
+Certifique-se de que ele está no diretório "in"
+Digite o nome do arquivo de entrada:
+Digite a url:
+URL não encontrado, sugestões: 
+bryanisd.org
+bryanlgh.org
+bryant.collegescheduler.com
+bryant.edu
+bryant.oauth.collegescheduler.com
+bryantpark.org
+bryantstratton.edu

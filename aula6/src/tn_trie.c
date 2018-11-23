@@ -1,4 +1,4 @@
-#include "tn_trie.h"
+#include "../include/tn_trie.h"
 
 void print_helper(tn_trie_node* root, string prefix);
 bool has_no_children(tn_trie_node* node);
@@ -109,27 +109,35 @@ void tn_suggest(tn_trie_node* root, string query) {
 	*/
 	
 	if (root == NULL) {
-		printf("Palavra inválida");
+		cout << "URL inválido" << endl;
 		return;
 	}
 	
 	int index = -1;
 	tn_trie_node *x = root;
 	
-	for (int i = 0; i < query.length(); i++) {
+	for (int i = 0; i < query.length(); i++) { 
 		index = get_index(query[i]);
 		
-		if (index < 0) return;				     // Não tem palavra "query" armazenada 
-		if (x->children[index] == NULL) return;  // Não tem palavra "query" armazenada 
+		if (index < 0) {
+			cout << "URL não encontrado." << endl;
+			return;
+			
+		} else if (x->children[index] == NULL) {
+			cout << "URL não encontrado." << endl;
+			return;   
+		}
 		
 		x = x->children[index];		
 	}
 
 	// Se query está armazenada na árvore 
 	if (x->is_end_of_word) {
+		cout << "URL encontrado: ";
 		cout << query << endl;
 		return;
 	}
-
+	
+	cout << "URL não encontrado, sugestões: " << endl;
 	print_helper(x, query);
 }
