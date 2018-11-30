@@ -2,8 +2,8 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-#include "util.h"
-#include "ext_sort.h"
+#include "../include/util.h"
+#include "../include/ext_sort.h"
 
 int main(int argc, char** argv) {
     char input_name[] = "./input.txt";

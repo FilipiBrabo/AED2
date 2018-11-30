@@ -37,4 +37,17 @@ int write_buffer(FILE* output, int* buffer, int num_items);
 
 int create_runs(char* input_file, int page_size);
 
+/* Essa funcao intercala o conteudo de dois arquivos ordenados,
+produzino um arquivo de saida ordenado que contem a uniao dos
+conteudos dos arquivos de entrada
+Cada arquivo de entrada contem um numero inteiro por linha.
+Ambos arquivos de entrada devem estar ordenados.
+Entrada:
+output: nome do arquivo de saida que sera criado
+input1: nome do primeiro arquivo de entrada
+input2: nome do segundo arquivo de entrada
+page_size: tamanho da pagina, em numero de itens
+*/
+void merge_files(char* output, char* input1, char* input2, int page_size);
+
 #endif

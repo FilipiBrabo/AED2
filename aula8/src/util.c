@@ -1,4 +1,4 @@
-#include "util.h"
+#include "../include/util.h"
 
 FILE *open_file(char* file_name, char* mode) {
     FILE *fd = fopen(file_name, mode);
