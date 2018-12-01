@@ -37,6 +37,8 @@ void merge(int* buffer, int left, int median, int right){
         j++;
         k++;
     }
+    free(left_buf);
+    free(right_buf); 
 }
 
 void merge_sort(int* buffer, int left, int right) {
@@ -103,73 +105,91 @@ int create_runs(char* input_file, int page_size){
 }
 
 void merge_files(char* output, char* input1, char* input2, int page_size) {
-        /*
-        1 - Ler aquivo 1 e 2 e colocar nos buffers
-        2 - Preencher buffer de saida usando a intercalação, quando chegar ao final do buffer
-            jogue o conteudo no arquivo final
-        3 - Ao terminar o buffer de uma página, leia o arquivo de entrada e pegar a prox. pág          
-        */
     FILE* output_file = open_file(output, "w");
     FILE* input_file1 = open_file(input1, "r");
     FILE* input_file2 = open_file(input2, "r");    
-    int* buffer1      = malloc(sizeof(page_size));
-    int* buffer2      = malloc(sizeof(page_size));
-    int *buffer_out   = malloc(sizeof(page_size));
-    int len_buf1      = 0;
-    int len_buf2      = 0;
+    int* buffer_1     = (int*) malloc(page_size*sizeof(int));
+    int* buffer_2     = (int*) malloc(page_size*sizeof(int));
+    int *buffer_out   = (int*) malloc(page_size*sizeof(int));
+    int len_buf_1     = 0;
+    int len_buf_2     = 0;
     int has_data      = 1;    
-    int ind_buf1      = 0;
-    int ind_buf2      = 0;
+    int ind_buf_1     = 0;
+    int ind_buf_2     = 0;
     int ind_buf_out   = 0;
+    
 
     // Enquanto 1 dos buffers tiver dados
     while (has_data) {
-        // Preenche buf1 se ele está vazio
-        if (len_buf1 == 0) {
+        // Preenche buf_1 se ele está vazio
+        if (len_buf_1 == 0) {
+            ind_buf_1 = 0;
+            
             for(int i = 0; i < page_size; i++) {
-                if(1 != fscanf(input_file1, "%d\n", &buffer1[i])) {
+                if(1 != fscanf(input_file1, "%d\n", &buffer_1[i])) {
                     break;
                 }
-                len_buf1++;
+                len_buf_1++;
             }
         }
-        // Preenche buf2 se ele está vazio
-        if (len_buf2 == 0) {
+    
+        // Preenche buf_2 se ele está vazio
+        if (len_buf_2 == 0) {
+            ind_buf_2 = 0;
+            
             for(int i = 0; i < page_size; i++) {
-                if(1 != fscanf(input_file2, "%d\n", &buffer2[i])) {
+                if(1 != fscanf(input_file2, "%d\n", &buffer_2[i])) {
                     break;
                 }
-                len_buf2++;
+                len_buf_2++;
             }
         } 
-
-        // Verifica se há dados nos buffers
-        if(len_buf1 < 1 && len_buf2 < 1) {
-            has_data = 0;
-            
-        } else {
-            // Tem dados, então intercala-os            
-            
+        
+        // Os dois buffers tem dados, então intercala-os
+        if(len_buf_1 > 0 && len_buf_2 > 0) {
             // Enquanto houver dados nos buffers 1 e 2, e o buffer de saida não estiver cheio
-            while (len_buf1 > 0 && len_buf2 > 0 && ind_buf_out < page_size) { 
-                // Numero no buffer1 menor que buffer 2
-                if (buffer1[ind_buf1] < buffer2[ind_buf2]) {
-                    buffer_out[ind_buf_out++] = buffer1[ind_buf1++];
-                    len_buf1--;
+            while (len_buf_1 > 0 && len_buf_2 > 0 && ind_buf_out < page_size) { 
+                
+                // Numero no buffer_1 menor que buffer 2
+                if (buffer_1[ind_buf_1] < buffer_2[ind_buf_2]) {
+                    buffer_out[ind_buf_out++] = buffer_1[ind_buf_1++];
+                    len_buf_1--;
                 
                 // Numero no buffer 2 menor que buffer 1
                 } else {
-                    buffer_out[ind_buf_out++] = buffer2[ind_buf2++];
-                    len_buf2--;
+                    buffer_out[ind_buf_out++] = buffer_2[ind_buf_2++];
+                    len_buf_2--;
                 }
             }
-
-            // Buffer de saída cheio
-            if (ind_buf_out == page_size) {
-                write_buffer(output_file, buffer_out, page_size);
-                ind_buf_out = 0;
-            }
-        }    
+            
+        // Buffer 1 tem dado e buffer 2 não tem    
+        } else if (len_buf_1 > 0 && len_buf_2 == 0) {
+            
+            // Enquanto houver dados no buffer 1, e o buffer de saida não estiver cheio
+            while (len_buf_1 > 0 && ind_buf_out < page_size) { 
+                buffer_out[ind_buf_out++] = buffer_1[ind_buf_1++];
+                len_buf_1--;
+            }    
+        
+        // Buffer 2 tem dado e buffer 1 não tem            
+        } else if (len_buf_2 > 0 && len_buf_1 == 0) {
+            
+            // Enquanto houver dados no buffer 2, e o buffer de saida não estiver cheio
+            while (len_buf_2 > 0 && ind_buf_out < page_size) { 
+                buffer_out[ind_buf_out++] = buffer_2[ind_buf_2++];
+                len_buf_2--;
+            }  
+        
+        // Não tem dado nos dois buffers    
+        } else {
+            has_data = 0;
+        } 
+        
+        // Buffer de saída cheio
+        if (ind_buf_out == page_size) {
+            write_buffer(output_file, buffer_out, page_size);
+            ind_buf_out = 0;
+        } 
     }
 
     // Verifica se há algum dado no buffer de saída remanescente
